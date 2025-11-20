@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DIALECTICA 2025 Scoreboard</title>
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom styles to match the dark theme and handle sticky/layout */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0f172a; /* Tailwind bg-gray-900 */
+      }
+
+      /* --- HEADER STYLES FOR LOGOS --- */
+      .header-wrapper {
+        width: 100%;
+        max-width: 1280px; /* Max width to contain logos and content */
+        margin: 0 auto;
+        display: flex;
+        justify-content: center; /* Center the title content */
+        align-items: center;
+        position: relative;
+        padding: 10px 0 30px 0; /* Vertical padding to separate from controls */
+      }
+
+      .header-content {
+        flex-grow: 1;
+        text-align: center;
+        margin: 0 80px; /* Ensure space so the title doesn't overlap the logos */
+      }
+
+      .logo {
+        height: 60px; /* Standard logo height */
+        width: auto;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+        object-fit: contain;
+      }
+
+      .logo.left {
+        left: 0;
+      }
+
+      .logo.right {
+        right: 0;
+      }
+      /* ------------------------------- */
+
+      /* FIX: Adjusted left offsets based on defined column widths */
+      .sticky-col-1 {
+        left: 0;
+        z-index: 10;
+      }
+      .sticky-col-2 {
+        left: 12rem; /* w-48 (Participant) */
+        z-index: 10;
+      }
+      .sticky-col-3 {
+        left: 20rem; /* w-48 (12rem) + w-32 (8rem) = 20rem (Grand Total) */
+        z-index: 10;
+      }
+
+      /* Judge Column Width (w-72 = 18rem) */
+      .w-judge-col {
+        width: 18rem;
+      }
+
+      /* Input specific styling */
+      input[type="number"] {
+        -moz-appearance: textfield; /* Firefox hide arrows */
+      }
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none; /* Chrome/Safari hide arrows */
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-900 text-white p-6 md:p-10">
+    <!-- NEW HEADER STRUCTURE WITH LOGOS -->
+    <div class="header-wrapper">
+      <img src="awaaz-modified.png" alt="DTC Logo" class="logo left" />
+
+      <header class="header-content">
+        <h1 class="text-4xl font-extrabold text-indigo-400 tracking-wider mb-1">
+          DIALECTICA 2025 Scoreboard
+        </h1>
+        <p class="text-lg text-gray-400">
+          AWAAZ - The Literature Society Evaluation Sheet
+        </p>
+      </header>
+
+      <img src="Logo-DTC-scaled.png" alt="AWAAZ Logo" class="logo right" />
+    </div>
+    <!-- END NEW HEADER STRUCTURE -->
+
+    <!-- CONTROL PANEL -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <!-- Participant Input & Stance Selector -->
+      <div class="col-span-1 md:col-span-2">
+        <h2
+          class="text-xl font-semibold mb-3 flex items-center text-indigo-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-5 h-5 mr-2"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Add Participants
+        </h2>
+
+        <!-- Stance Selector -->
+        <div class="flex space-x-4 mb-3">
+          <label class="flex items-center text-lg cursor-pointer">
+            <input
+              type="radio"
+              name="newDebaterStance"
+              value="For"
+              checked
+              class="form-radio h-5 w-5 text-green-500 bg-gray-800 border-gray-600 focus:ring-green-500"
+            />
+            <span class="ml-2 text-green-400 font-medium">For the Motion</span>
+          </label>
+          <label class="flex items-center text-lg cursor-pointer">
+            <input
+              type="radio"
+              name="newDebaterStance"
+              value="Against"
+              class="form-radio h-5 w-5 text-red-500 bg-gray-800 border-gray-600 focus:ring-red-500"
+            />
+            <span class="ml-2 text-red-400 font-medium"
+              >Against the Motion</span
+            >
+          </label>
+        </div>
+
+        <div class="flex space-x-2 p-3 bg-white/5 rounded-lg">
+          <input
+            type="text"
+            id="newDebaterName"
+            placeholder="Enter Team/Debater Name"
+            class="flex-grow bg-transparent text-white border-b border-indigo-500 focus:outline-none focus:border-indigo-300 placeholder-indigo-300/50 transition-colors"
+          />
+          <button
+            onclick="addDebater()"
+            class="text-white bg-indigo-600 hover:bg-indigo-700 p-1.5 rounded-full transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-5 h-5"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v8M8 12h8" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scoring Rules Panel -->
+      <div
+        class="col-span-1 md:col-span-2 p-4 bg-indigo-900/50 rounded-lg shadow-xl border border-indigo-500"
+      >
+        <h2 class="text-xl font-semibold mb-2 text-indigo-200">
+          Scoring Rules (Max 5 points each)
+        </h2>
+        <p class="text-sm text-gray-300 mb-2" id="scoreRulesSummary"></p>
+        <ul
+          class="grid grid-cols-2 text-sm text-gray-400 gap-1"
+          id="scoreParametersList"
+        ></ul>
+        <p class="text-xs text-yellow-500 mt-2">
+          **Input Format:** Enter scores 0-5 in the dedicated boxes.
+        </p>
+      </div>
+    </div>
+
+    <!-- SEPARATE LEADERBOARDS CONTAINER -->
+    <div class="space-y-12" id="leaderboardsContainer">
+      <!-- Leaderboards will be rendered here by JavaScript -->
+    </div>
+
+    <script>
+      // --- CONSTANTS ---
+      const MAX_SCORE = 5;
+      const NUM_JUDGES = 3;
+      const PARAMETERS = [
+        {
+          id: "p-1",
+          name: "Content & Logic",
+          short: "Content",
+          max: MAX_SCORE,
+        },
+        { id: "p-2", name: "Clarity", short: "Clarity", max: MAX_SCORE },
+        {
+          id: "p-3",
+          name: "Rebuttal Strength",
+          short: "Rebuttal",
+          max: MAX_SCORE,
+        },
+        {
+          id: "p-4",
+          name: "Language & Delivery",
+          short: "Delivery",
+          max: MAX_SCORE,
+        },
+      ];
+      const JUDGES = Array.from({ length: NUM_JUDGES }, (_, i) => ({
+        id: `j-${i + 1}`,
+        name: `Judge ${i + 1}`,
+      }));
+      const TOTAL_MAX_SCORE_PER_JUDGE = PARAMETERS.length * MAX_SCORE;
+      const TOTAL_MAX_GRAND_TOTAL = TOTAL_MAX_SCORE_PER_JUDGE * JUDGES.length;
+
+      // --- STATE ---
+      let debaters = [
+        { id: "d-1", name: "Team Zeus", stance: "For", scores: {} },
+        { id: "d-2", name: "Team Apollo", stance: "Against", scores: {} },
+      ];
+
+      // --- HELPER FUNCTIONS ---
+
+      /**
+       * Calculates totals and ranks based on current debater scores.
+       * @returns {{ rankedFor: Array, rankedAgainst: Array }}
+       */
+      function calculateResults() {
+        const results = debaters.map((debater) => {
+          let grandTotal = 0;
+          const judgeTotals = {};
+
+          JUDGES.forEach((judge) => {
+            const judgeScore = debater.scores[judge.id] || {};
+            // Calculate total score for the current judge
+            const judgeTotal = PARAMETERS.reduce((sum, param) => {
+              // Use stored score or 0 if undefined
+              return sum + (judgeScore[param.id] || 0);
+            }, 0);
+
+            judgeTotals[judge.id] = judgeTotal;
+            grandTotal += judgeTotal;
+          });
+
+          return { ...debater, judgeTotals, grandTotal };
+        });
+
+        // 1. Sort all results by grand total descending
+        const sortedResults = results.sort(
+          (a, b) => b.grandTotal - a.grandTotal
+        );
+
+        let rankCounterFor = 0;
+        let rankCounterAgainst = 0;
+
+        // 2. Separate and assign ranks within their stance group
+        const rankedFor = sortedResults
+          .filter((d) => d.stance === "For")
+          .map((d) => ({ ...d, rank: ++rankCounterFor }));
+
+        const rankedAgainst = sortedResults
+          .filter((d) => d.stance === "Against")
+          .map((d) => ({ ...d, rank: ++rankCounterAgainst }));
+
+        return { rankedFor, rankedAgainst };
+      }
+
+      // --- EVENT HANDLERS ---
+
+      function addDebater() {
+        const inputElement = document.getElementById("newDebaterName");
+        const stanceElement = document.querySelector(
+          'input[name="newDebaterStance"]:checked'
+        );
+        const newDebaterName = inputElement.value.trim();
+        const newDebaterStance = stanceElement ? stanceElement.value : "For";
+
+        if (newDebaterName) {
+          debaters.push({
+            id: `d-${Date.now()}`,
+            name: newDebaterName,
+            stance: newDebaterStance,
+            scores: {},
+          });
+          inputElement.value = ""; // Clear input
+          renderAll();
+        }
+      }
+
+      function removeDebater(id) {
+        debaters = debaters.filter((d) => d.id !== id);
+        renderAll();
+      }
+
+      /**
+       * Handles individual parameter score input.
+       * @param {Event} event The input event.
+       * @param {string} debaterId The ID of the debater.
+       * @param {string} judgeId The ID of the judge.
+       * @param {string} paramId The ID of the parameter being scored.
+       */
+      function handleScoreInput(event, debaterId, judgeId, paramId) {
+        const rawValue = event.target.value;
+        // Ensure value is a number between 0 and 5
+        const scoreValue = Math.max(
+          0,
+          Math.min(MAX_SCORE, parseInt(rawValue) || 0)
+        );
+
+        // Update the input field value to reflect the constrained score
+        if (parseInt(rawValue) !== scoreValue) {
+          event.target.value = scoreValue;
+        }
+
+        debaters = debaters.map((debater) => {
+          if (debater.id === debaterId) {
+            return {
+              ...debater,
+              scores: {
+                ...debater.scores,
+                [judgeId]: {
+                  ...debater.scores[judgeId],
+                  [paramId]: scoreValue,
+                },
+              },
+            };
+          }
+          return debater;
+        });
+        renderAll();
+      }
+
+      // --- RENDERING FUNCTIONS ---
+
+      function getRankPillHTML(rank) {
+        let style = "bg-gray-600 text-white";
+        let iconHTML = "";
+
+        if (rank === 1) {
+          style = "bg-yellow-500 text-black shadow-lg shadow-yellow-500/50";
+          iconHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-1 fill-current"><path d="m10 17 6-2 6 2v-8l-6-2-6 2"/><path d="M10 17c-.85.35-1.83.5-2.9.5-1.9 0-3.7-.8-5.1-2.2L2 14V5l6-2 6 2"/></svg>`;
+        } else if (rank === 2) {
+          style = "bg-gray-400 text-black shadow-lg shadow-gray-400/50";
+        } else if (rank === 3) {
+          style = "bg-orange-600 text-white shadow-lg shadow-orange-600/50";
+        }
+
+        return `
+                <div class="flex items-center justify-center px-3 py-1 text-sm font-extrabold rounded-full ${style}">
+                    ${iconHTML}
+                    # ${rank}
+                </div>
+            `;
+      }
+
+      function getJudgeHeaderHTML(judge, maxScore) {
+        return `
+                <th class="px-2 py-3 border-l border-gray-700 bg-gray-800 text-sm w-judge-col sticky top-0 z-10">
+                    <div class="flex flex-col items-center">
+                        <span class="font-bold text-indigo-400 text-lg">${
+                          judge.name
+                        }</span>
+                        <div class="flex justify-center text-xs text-gray-400 mt-1 space-x-2">
+                           ${PARAMETERS.map(
+                             (p) =>
+                               `<span title="${p.name}">[${p.short.charAt(
+                                 0
+                               )}]</span>`
+                           ).join("")}
+                        </div>
+                        <span class="text-xs text-yellow-400">Total Score: **${maxScore}**</span>
+                    </div>
+                </th>
+            `;
+      }
+
+      function getScoreCellHTML(debater, judge) {
+        const judgeId = judge.id;
+        const debaterId = debater.id;
+        const debaterScores = debater.scores[judgeId] || {};
+        const totalScore = debater.judgeTotals[judgeId] || 0; // Use the pre-calculated total
+        const isHighScore = totalScore > TOTAL_MAX_SCORE_PER_JUDGE * 0.7;
+
+        const totalScoreClass = isHighScore
+          ? "bg-indigo-700 text-white"
+          : "bg-gray-700 text-indigo-300";
+
+        return `
+                <td class="border-l border-gray-700 p-3 hover:bg-gray-800/70 transition-colors w-judge-col">
+                    <div class="flex flex-col space-y-2">
+                        <!-- Individual Inputs for 4 Parameters -->
+                        <div class="flex space-x-1 justify-between">
+                            ${PARAMETERS.map(
+                              (param) => `
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="${MAX_SCORE}"
+                                    value="${debaterScores[param.id] || ""}"
+                                    oninput="handleScoreInput(event, '${debaterId}', '${judgeId}', '${
+                                param.id
+                              }')"
+                                    placeholder="${param.short.charAt(0)}"
+                                    class="w-1/4 p-1 text-center bg-gray-900 border border-gray-600 text-white rounded-md text-base focus:ring-indigo-500 focus:border-indigo-500"
+                                    title="${param.name} (Max ${MAX_SCORE})"
+                                />
+                            `
+                            ).join("")}
+                        </div>
+                        
+                        <div class="text-center py-1 font-bold text-xl rounded-md ${totalScoreClass}">
+                            Score: ${totalScore}
+                        </div>
+                    </div>
+                </td>
+            `;
+      }
+
+      function getDebaterRowHTML(debater) {
+        const debaterId = debater.id;
+        const rankPill = getRankPillHTML(debater.rank);
+
+        return `
+                <tr class="hover:bg-gray-800/70 transition-colors group">
+                    
+                    <!-- Debater Name (Sticky Left 1) -->
+                    <td class="px-4 py-3 font-semibold text-white bg-gray-900 group-hover:bg-gray-800/70 sticky sticky-col-1 z-10 w-48">
+                        <div class="flex items-center justify-between">
+                            <span>${debater.name}</span>
+                            <button onclick="removeDebater('${debaterId}')" class="text-red-600 hover:text-red-500 transition-colors ml-2 opacity-0 group-hover:opacity-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </td>
+
+                    <!-- Grand Total (Sticky Left 2) -->
+                    <td class="px-4 py-3 font-extrabold text-xl sticky sticky-col-2 z-10 w-32 ${
+                      debater.rank === 1
+                        ? "bg-yellow-500 text-gray-900 shadow-xl"
+                        : "bg-gray-700 text-indigo-300"
+                    } border-l border-gray-700">
+                        ${debater.grandTotal} / ${TOTAL_MAX_GRAND_TOTAL}
+                    </td>
+                    
+                    <!-- Rank (Sticky Left 3) -->
+                    <td class="px-4 py-3 sticky sticky-col-3 z-10 w-24 bg-gray-800/70 border-l border-gray-700">
+                        ${rankPill}
+                    </td>
+
+                    <!-- Fixed Judge Score Cells -->
+                    ${JUDGES.map((judge) =>
+                      getScoreCellHTML(debater, judge)
+                    ).join("")}
+                </tr>
+            `;
+      }
+
+      function getLeaderboardTableHTML(title, results, color, iconHTML) {
+        const rowsHTML =
+          results.length === 0
+            ? `<tr><td colSpan="${
+                JUDGES.length + 3
+              }" class="py-6 text-center text-gray-500">No participants currently ${title.toLowerCase()}.</td></tr>`
+            : results.map(getDebaterRowHTML).join("");
+
+        return `
+                <div class="mt-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center ${color} border-b-2 border-current pb-2">
+                        ${iconHTML}
+                        ${title} Leaderboard
+                    </h2>
+                    <div class="overflow-x-auto rounded-xl shadow-2xl border border-gray-700">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800 text-gray-300">
+                                <tr>
+                                    <!-- Fixed Column Headers -->
+                                    <th class="px-4 py-3 text-left font-bold text-base bg-gray-800 sticky sticky-col-1 top-0 z-20 w-48">Participant</th>
+                                    <th class="px-4 py-3 text-center font-bold text-base bg-gray-800 border-l border-gray-700 sticky sticky-col-2 top-0 z-20 w-32">Grand Total</th>
+                                    <th class="px-4 py-3 text-center font-bold text-base bg-gray-800 border-l border-gray-700 sticky sticky-col-3 top-0 z-20 w-24">Rank</th>
+                                    
+                                    <!-- Judge Headers -->
+                                    ${JUDGES.map((judge) =>
+                                      getJudgeHeaderHTML(
+                                        judge,
+                                        TOTAL_MAX_SCORE_PER_JUDGE
+                                      )
+                                    ).join("")}
+                                </tr>
+                            </thead>
+                            <tbody class="bg-gray-900 divide-y divide-gray-700">
+                                ${rowsHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+      }
+
+      function renderAll() {
+        // 1. Calculate Results
+        const { rankedFor, rankedAgainst } = calculateResults();
+
+        // 2. Render Leaderboards
+        const container = document.getElementById("leaderboardsContainer");
+
+        const forMotionIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mr-3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
+        const againstMotionIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mr-3"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>`;
+
+        container.innerHTML = `
+                ${getLeaderboardTableHTML(
+                  "For the Motion",
+                  rankedFor,
+                  "text-green-400",
+                  forMotionIcon
+                )}
+                ${getLeaderboardTableHTML(
+                  "Against the Motion",
+                  rankedAgainst,
+                  "text-red-400",
+                  againstMotionIcon
+                )}
+            `;
+
+        // 3. Update Scoring Rules Summary
+        document.getElementById("scoreRulesSummary").innerHTML = `
+                Max Score per Judge: **${TOTAL_MAX_SCORE_PER_JUDGE}** | Max Grand Total: **${TOTAL_MAX_GRAND_TOTAL}**
+            `;
+
+        // 4. Populate Parameters List
+        const list = document.getElementById("scoreParametersList");
+        list.innerHTML = PARAMETERS.map(
+          (p, index) => `
+                <li class="flex items-center">
+                    <span class="inline-block w-4 h-4 mr-1 text-center bg-gray-700 text-xs text-yellow-300 rounded-sm">${
+                      index + 1
+                    }</span>
+                    ${p.name}
+                </li>
+            `
+        ).join("");
+
+        // 5. Re-attach Enter key listener for new debater input
+        const inputElement = document.getElementById("newDebaterName");
+        if (inputElement) {
+          inputElement.onkeydown = (e) => {
+            if (e.key === "Enter") {
+              addDebater();
+              e.preventDefault();
+            }
+          };
+        }
+      }
+
+      // Initialize the scoreboard when the script loads
+      document.addEventListener("DOMContentLoaded", renderAll);
+    </script>
+  </body>
+</html>
